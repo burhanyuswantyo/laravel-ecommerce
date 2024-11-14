@@ -11,10 +11,13 @@
         "php": "^8.2",
         "laravel-lang/common": "^6.4",
         "laravel/framework": "^11.9",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
+        "livewire/livewire": "^3.5",
         "php-flasher/flasher-laravel": "^2.1",
-        "richan-fongdasen/eloquent-blameable": "^1.10"
+        "richan-fongdasen/eloquent-blameable": "^1.10",
+        "spatie/laravel-sluggable": "^3.6"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",
