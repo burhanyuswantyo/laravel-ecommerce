@@ -17,10 +17,11 @@ class ProductImageFactory extends Factory
      */
     public function definition(): array
     {
-        $image = UploadedFile::fake()->image('product' . rand(1, 1000) . '.jpg', 640, 480);
+        $image = UploadedFile::fake()->image(uniqid() . '.jpg');
+        $filename = $image->store('products', 'public');
 
         return [
-            'image_path' => $image->store('products', 'public'),
+            'image_path' => $filename,
         ];
     }
 }
