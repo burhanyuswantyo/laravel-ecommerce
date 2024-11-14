@@ -11,6 +11,7 @@ class Product extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    // protected $fillabel = ['name', 'description', 'price', 'category_id'];
 
     public function category()
     {
