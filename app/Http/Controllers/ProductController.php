@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use Flasher\Prime\Notification\Type;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -25,7 +26,7 @@ class ProductController extends Controller
     {
         $categories = Category::all();
 
-        return view('admin.products.create', compact('categories'));
+        return view('admin.products.form', compact('categories'));
     }
 
     /**
@@ -33,8 +34,30 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request->merge(['slug' => \Str::slug($request->name)]);
-        Product::create($request->all());
+        $request->validate([
+            'name' => 'required',
+            'price' => 'required|numeric',
+            'stock' => 'required|numeric',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required',
+            'images' => 'required',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ], [], [
+            'images.*' => 'Gambar',
+        ]);
+
+        try {
+            $product = Product::query()->create($request->all());
+            foreach ($request->images as $image) {
+                $fileName = $image->store('products', 'public');
+                $product->productImages()->create(['image_path' => $fileName]);
+            }
+
+            flash('Produk berhasil ditambahkan.', Type::SUCCESS);
+        } catch (\Exception $e) {
+            flash('Produk gagal ditambahkan.', Type::ERROR);
+        }
+
 
         return redirect()->route('admin.products.index');
     }
@@ -44,7 +67,10 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $product = Product::query()->findOrFail($id);
+        $categories = Category::all();
+
+        return view('admin.products.form', compact('categories', 'product'));
     }
 
     /**
@@ -52,7 +78,10 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $product = Product::query()->findOrFail($id);
+        $categories = Category::all();
+
+        return view('admin.products.form', compact('categories', 'product'));
     }
 
     /**
@@ -60,7 +89,24 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'price' => 'required|numeric',
+            'stock' => 'required|numeric',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required',
+        ]);
+
+        try {
+            $product = Product::query()->findOrFail($id);
+            $product->update($request->all());
+            flash('Produk berhasil diperbarui.', Type::SUCCESS);
+        } catch (\Exception $e) {
+            flash('Produk gagal diperbarui.', Type::ERROR);
+        }
+
+        return redirect()->route('admin.products.index');
     }
 
     /**
@@ -68,6 +114,16 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $product = Product::query()->findOrFail($id);
+            $product->productImages()->delete();
+            $product->delete();
+
+            flash('Produk berhasil dihapus.', Type::SUCCESS);
+            return redirect()->back();
+        } catch (\Exception $e) {
+            flash('Produk gagal dihapus.', Type::ERROR);
+            return redirect()->back();
+        }
     }
 }
