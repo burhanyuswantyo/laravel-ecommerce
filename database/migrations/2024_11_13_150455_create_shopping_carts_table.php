@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('shopping_carts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('buyer_id')->constrained('users');
-            $table->foreignId('product_id')->constrained();
+            $table->foreignUlid('product_id')->constrained();
             $table->integer('quantity');
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
