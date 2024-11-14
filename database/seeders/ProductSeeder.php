@@ -22,7 +22,7 @@ class ProductSeeder extends Seeder
         Category::query()->truncate();
         ProductImage::query()->truncate();
         // Delete all files in the products directory
-        Storage::deleteDirectory(storage_path('app/public/products'));
+        Storage::disk('public')->deleteDirectory('products');
 
         Category::factory(5)->has(
             Product::factory()->count(10)->has(
