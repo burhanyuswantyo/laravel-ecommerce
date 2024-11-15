@@ -15,6 +15,7 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
     <!-- Scripts -->
+    @livewireStyles
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 
@@ -33,10 +34,17 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
+                    <ul class="navbar-nav">
                         @auth
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.products.index') }}">Produk</a>
+                            </li>
+                        @endauth
+                    </ul>
+                    <ul class="navbar-nav">
+                        @auth
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.products-livewire.index') }}">Livewire Produk</a>
                             </li>
                         @endauth
                     </ul>
@@ -85,6 +93,7 @@
             @yield('content')
         </main>
     </div>
+    @livewireScripts
 </body>
 
 </html>

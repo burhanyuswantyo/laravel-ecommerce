@@ -17,7 +17,7 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $name = $this->faker->sentence(2),
+            'name' => $name = $this->faker->safeColorName(),
             'slug' => \Str::slug($name),
             'description' => $this->faker->paragraph(),
         ];
